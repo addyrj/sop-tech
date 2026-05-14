@@ -1,0 +1,16 @@
+{% load static %}
+<h3>Select Files</h3>
+
+{% if files %}
+<div class="files-grid">
+    {% for file in files %}
+    <div class="file-card" data-file-id="{{ file.id }}">
+        {{ file.file.name|slice:"-20:" }}
+    </div>
+    {% endfor %}
+</div>
+
+<button id="save-files-btn" type="button">Save Selection</button>
+{% else %}
+<p>No files in this folder.</p>
+{% endif %}

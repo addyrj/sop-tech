@@ -1,0 +1,50 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block content %}
+<div class="content">
+    
+    <div class="module aligned" style="max-width: 600px; margin: 40px auto;">
+        
+        <h1 style="margin-bottom: 20px;">
+            Edit TV Name
+        </h1>
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+
+            <fieldset class="module aligned">
+
+                <div class="form-row">
+                    <div>
+                        <label for="id_display_number" class="required">
+                            TV Name:
+                        </label>
+                        <input 
+                            type="text" 
+                            name="display_number" 
+                            id="id_display_number"
+                            value="{{ tv.display_number }}"
+                            class="vTextField"
+                            style="width: 100%;"
+                            required
+                        >
+                    </div>
+                </div>
+
+            </fieldset>
+
+            <div class="submit-row mt-3">
+                <input type="submit" value="Save" class="default">
+                <a href="{% url 'admin:sop_mediacontent_changelist' %}" class="button cancel-link">
+                    Cancel
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+{% endblock %}
+

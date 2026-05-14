@@ -1,0 +1,11 @@
+{% extends "admin/base.html" %}
+
+{% block branding %}
+<h1 id="site-name">
+    {% if request.user.is_authenticated %}
+        {{ request.db_title }}
+    {% else %}
+        Iottech Administration
+    {% endif %}
+</h1>
+{% endblock %}

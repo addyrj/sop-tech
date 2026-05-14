@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <script src="{% static 'js/media_toggle.js' %}"></script>
+{% endblock %}
+
+
+{% block submit_buttons_bottom %}
+    {{ block.super }}
+    <input type="button" value="Sequence Toggle" id="custom-action-btn" class="btn btn-block btn-secondary btn-sm" style="margin-top:10px;">
+    <input type="hidden" name="custom_action" id="custom_action" value="false" >
+
+ 
+
+
+{% endblock %} 

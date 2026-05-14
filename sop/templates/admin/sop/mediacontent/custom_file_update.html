@@ -1,0 +1,141 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+
+<!-- Django admin jQuery -->
+<script src="{% static 'admin/js/vendor/jquery/jquery.js' %}"></script>
+<script src="{% static 'admin/js/jquery.init.js' %}"></script>
+
+<!-- Our modal JS -->
+<script src="{% static 'js/mediafile_select_modal.js' %}"></script>
+
+<style>
+    /* Container styling */
+    .custom-form-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px 40px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .custom-form-container h1 {
+        text-align: center;
+        margin-bottom: 25px;
+        font-size: 28px;
+        color: #333;
+    }
+
+    /* Form fields */
+    .custom-form-container form {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .custom-form-container input[type="text"],
+    .custom-form-container input[type="file"],
+    .custom-form-container select,
+    .custom-form-container textarea {
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        transition: 0.2s;
+    }
+
+    .custom-form-container input[type="text"]:focus,
+    .custom-form-container input[type="file"]:focus,
+    .custom-form-container select:focus,
+    .custom-form-container textarea:focus {
+        border-color: #4a90e2;
+        outline: none;
+        box-shadow: 0 0 5px rgba(74,144,226,0.4);
+    }
+
+    /* Submit button */
+    .custom-form-container input[type="submit"] {
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        background-color: #4a90e2;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    .custom-form-container input[type="submit"]:hover {
+        background-color: #357ab7;
+    }
+
+    .form-row {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    /* Fixed label width */
+    .form-row label {
+        width: 120px;          /* adjust once, applies everywhere */
+        font-weight: 600;
+        text-align: right;
+    }
+
+    /* Inputs all same width */
+    .form-row input,
+    .form-row select,
+    .form-row textarea {
+        width: 320px;
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="custom-form-container">
+    <h1>Change / Update Media File</h1>
+    {% comment %} <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Update File">
+    </form> {% endcomment %}
+
+
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- File chooser + Select File buttonkk -->
+        <div class="form-row">
+            {{ form.file.label_tag }}
+            {{ form.file }}
+        </div>
+
+        <div class="form-row">
+            {{ form.sequence.label_tag }}
+            {{ form.sequence }}
+        </div>
+
+        <div class="form-row">
+            {{ form.duration.label_tag }}
+            {{ form.duration }}
+        </div>
+
+        <div class="form-row">
+            {{ form.volume.label_tag }}
+            {{ form.volume }}
+        </div>
+
+        {{ form.selected_files_ids }}
+
+        <input type="submit" value="Update File">
+    </form>
+
+</div>
+{% endblock %}
+
+

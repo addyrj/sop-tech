@@ -1,0 +1,112 @@
+<script>
+
+
+
+function customSave() {
+    let folderName = document.querySelector("#id_folder_names").value;
+    let files = document.querySelector("#id_filess").files;
+
+    if (!folderName) { alert("Folder name required!"); return; }
+    if (files.length === 0) { alert("Select at least one file!"); return; }
+
+    let csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    // Show Bootstrap modal
+    let uploadModal = new bootstrap.Modal(document.getElementById('uploadModal'));
+    uploadModal.show();
+
+    let progressBar = document.getElementById("progressBar");
+    let currentFile = document.getElementById("currentFile");
+
+    let uploadFile = (index) => {
+        if (index >= files.length) {
+            // All uploaded → close modal & redirect
+            uploadModal.hide();
+            window.location.href = "/admin/sop/mediabucket/";
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append("folder_name", folderName);
+        formData.append("files", files[index]);
+
+        currentFile.textContent = "Uploading: " + files[index].name;
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/sop/upload-media/", true);
+        xhr.setRequestHeader("X-CSRFToken", csrfToken);
+
+        xhr.upload.onprogress = function(e) {
+            if (e.lengthComputable) {
+                let percent = Math.round(((index + e.loaded / e.total) / files.length) * 100);
+                progressBar.style.width = percent + "%";
+                progressBar.textContent = percent + "%";
+            }
+        };
+
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                let response = JSON.parse(xhr.responseText);
+                if (response.status === "success") {
+                    uploadFile(index + 1); // Next file
+                } else {
+                    alert("Failed: " + files[index].name + " → " + response.message);
+                }
+            } else {
+                alert("Error uploading " + files[index].name);
+            }
+        };
+
+        xhr.onerror = function() { alert("Upload failed for " + files[index].name); };
+
+        xhr.send(formData);
+    };
+
+    uploadFile(0);
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    let jazzy = document.getElementById("jazzy-actions");
+    if (jazzy && jazzy.parentElement) {
+        jazzy.parentElement.classList.remove("col-lg-3");
+        jazzy.parentElement.classList.add("col-lg-9");
+    }
+});
+</script>
+
+
+{% extends "admin/change_form.html" %}
+{% load static %}
+
+{% block submit_buttons_top %}{% endblock %}
+
+{% block submit_buttons_bottom %}
+<style>
+    #mediabucket_form .card{
+        display:none !important;
+    }
+</style>
+    <div>
+    <input type="text" id="id_folder_names" placeholder="Enter Folder Name" class="vTextField" style="margin-right:10px;">
+    <input type="file" id="id_filess" multiple>
+    <button type="button" class="btn btn-success" style="padding:10px;width:50px;"onclick="customSave()">Save</button>
+
+    <!-- Bootstrap Modal for Progress -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="uploadModalLabel">Uploading Files</h5>
+          </div>
+          <div class="modal-body">
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" style="width: 0%;" id="progressBar">0%</div>
+            </div>
+            <div id="currentFile" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+{% endblock %}
+
